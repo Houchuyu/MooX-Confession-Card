@@ -198,12 +198,12 @@
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-slate-700 ml-1">推しを一言で紹介</label>
                     <textarea id="input-desc" maxlength="50" placeholder="性格やエピソードなどを自由に記入してください..." rows="6" class="w-full px-5 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-purple-400 outline-none transition-all text-slate-600 resize-none"></textarea>
-                    <p class="text-xs text-slate-400 text-right mr-1">※50文字以内で入力してください</p>
+                    <p class="text-xs text-slate-400 text-right mr-1">※50文字以内が最適です</p>
                 </div>
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-slate-700 ml-1">あなたへの想い</label>
                     <textarea id="input-message" maxlength="300" placeholder="伝えたいメッセージを記入してください..." rows="6" class="w-full px-5 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-purple-400 outline-none transition-all text-slate-600 resize-none"></textarea>
-                    <p class="text-xs text-slate-400 text-right mr-1">※300文字以内で入力してください</p>
+                    <p class="text-xs text-slate-400 text-right mr-1">※300文字以内が最適です</p>
                 </div>
             </div>
         </div>
@@ -403,15 +403,22 @@
                                  
                                  const imgContainer = polaroid.querySelector('#avatar-preview');
                                  if (imgContainer) {
-                                     imgContainer.style.width = "100%";
-                                     imgContainer.style.height = "100%";
+                                     // Fixed dimensions based on parent size minus padding
+                                     // Polaroid: 270px width, 360px height
+                                     // Padding: 0.75rem (12px) horizontal/top, 2.5rem (40px) bottom
+                                     // Width: 270 - 24 = 246px
+                                     // Height: 360 - 12 - 40 = 308px
+                                     imgContainer.style.width = "246px";
+                                     imgContainer.style.height = "308px";
                                      imgContainer.style.display = "flex";
                                      imgContainer.style.overflow = "hidden";
+                                     imgContainer.style.borderRadius = "2px"; // Match rounded-sm
                                      
                                      const img = imgContainer.querySelector('img');
                                      if (img && img.src) {
                                         const imgSrc = img.src;
-                                        img.style.display = "none";
+                                        // Remove img element entirely to prevent any layout interference
+                                        img.remove();
                                         
                                         imgContainer.style.backgroundImage = `url("${imgSrc}")`;
                                         imgContainer.style.backgroundSize = "cover";
