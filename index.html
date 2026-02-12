@@ -89,7 +89,7 @@
                 <div class="tape"></div>
                 <div class="polaroid w-full relative group cursor-pointer overflow-hidden" style="aspect-ratio: 3/4;">
                     <div id="avatar-preview" class="w-full h-full bg-slate-50 flex items-center justify-center text-slate-300 overflow-hidden rounded-sm">
-                        <span id="avatar-placeholder" class="text-5xl">✨</span>
+                        <span id="avatar-placeholder" class="text-5xl">🐱</span>
                         <img id="avatar-img" src="" class="hidden w-full h-full object-cover">
                     </div>
                     <div class="absolute bottom-2 right-4 text-slate-400 text-xs handwriting">
@@ -173,7 +173,7 @@
     <div class="w-full max-w-5xl bg-white p-10 rounded-3xl shadow-xl border border-slate-100">
         <div class="flex items-center gap-3 mb-8">
             <div class="p-2 bg-purple-100 rounded-lg">
-                <span class="text-xl">🐱</span>
+                <span class="text-xl">✨</span>
             </div>
             <h3 class="text-2xl font-bold text-slate-800">告白カードをカスタマイズ</h3>
         </div>
@@ -189,19 +189,21 @@
                     <input type="text" id="input-tags" placeholder="可愛い, 優しい, 探偵" class="w-full px-5 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-purple-400 outline-none transition-all text-slate-600">
                 </div>
                 <div class="space-y-2">
-                    <label class="text-sm font-bold text-slate-700 ml-1">画像URL</label>
-                    <input type="text" id="input-avatar" placeholder="https://example.com/image.jpg" class="w-full px-5 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-purple-400 outline-none transition-all text-slate-600 text-xs">
+                    <label class="text-sm font-bold text-slate-700 ml-1">画像を選択</label>
+                    <input type="file" id="input-avatar" accept="image/*" class="w-full px-5 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-purple-400 outline-none transition-all text-slate-600 text-xs file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-100 file:text-purple-700 hover:file:bg-purple-200">
                 </div>
             </div>
             
             <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-slate-700 ml-1">推しを一言で紹介</label>
-                    <textarea id="input-desc" placeholder="性格やエピソードなどを自由に記入してください..." rows="6" class="w-full px-5 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-purple-400 outline-none transition-all text-slate-600 resize-none"></textarea>
+                    <textarea id="input-desc" maxlength="50" placeholder="性格やエピソードなどを自由に記入してください..." rows="6" class="w-full px-5 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-purple-400 outline-none transition-all text-slate-600 resize-none"></textarea>
+                    <p class="text-xs text-slate-400 text-right mr-1">※50文字以内で入力してください</p>
                 </div>
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-slate-700 ml-1">あなたへの想い</label>
-                    <textarea id="input-message" placeholder="伝えたいメッセージを記入してください..." rows="6" class="w-full px-5 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-purple-400 outline-none transition-all text-slate-600 resize-none"></textarea>
+                    <textarea id="input-message" maxlength="300" placeholder="伝えたいメッセージを記入してください..." rows="6" class="w-full px-5 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-purple-400 outline-none transition-all text-slate-600 resize-none"></textarea>
+                    <p class="text-xs text-slate-400 text-right mr-1">※300文字以内で入力してください</p>
                 </div>
             </div>
         </div>
@@ -283,23 +285,25 @@
             displays.message.textContent = e.target.value || '大好きなあなたへ：\n\n（ここに想いを綴ってください...）\n\n「どんな小さな瞬間も、 あなたがいるだけで輝いて见えました。」\n\n...のような、あなただけの特別な想い出を言葉にしてみましょう。';
         });
 
-        inputs.avatar.addEventListener('input', (e) => {
-            const url = e.target.value.trim();
-            if (url) {
-                displays.avatarImg.src = url;
-                displays.avatarImg.onload = () => {
+        inputs.avatar.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    displays.avatarImg.src = event.target.result;
                     displays.avatarImg.classList.remove('hidden');
                     displays.avatarPlaceholder.classList.add('hidden');
                 };
-                displays.avatarImg.onerror = () => {
+                reader.onerror = () => {
                     displays.avatarImg.classList.add('hidden');
                     displays.avatarPlaceholder.classList.remove('hidden');
                     displays.avatarPlaceholder.textContent = '❌';
                 };
+                reader.readAsDataURL(file);
             } else {
                 displays.avatarImg.classList.add('hidden');
                 displays.avatarPlaceholder.classList.remove('hidden');
-                displays.avatarPlaceholder.textContent = '✨';
+                displays.avatarPlaceholder.textContent = '🐱';
             }
         });
 
