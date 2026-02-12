@@ -88,9 +88,8 @@
             <div class="relative w-full max-w-[240px] mx-auto mb-6">
                 <div class="tape"></div>
                 <div class="polaroid w-full relative group cursor-pointer overflow-hidden" style="aspect-ratio: 3/4;">
-                    <div id="avatar-preview" class="w-full h-full bg-slate-50 flex items-center justify-center text-slate-300 overflow-hidden rounded-sm">
+                    <div id="avatar-preview" class="w-full h-full bg-slate-50 flex items-center justify-center text-slate-300 overflow-hidden rounded-sm bg-cover bg-center bg-no-repeat">
                         <span id="avatar-placeholder" class="text-5xl">🐱</span>
-                        <img id="avatar-img" src="" class="hidden w-full h-full object-cover">
                     </div>
                     <div class="absolute bottom-2 right-4 text-slate-400 text-xs handwriting">
                         <span id="card-date">2026.02.11</span>
@@ -261,7 +260,7 @@
             name: document.getElementById('card-name'),
             tags: document.getElementById('card-tags'),
             desc: document.getElementById('card-desc'),
-            avatarImg: document.getElementById('avatar-img'),
+            avatarPreview: document.getElementById('avatar-preview'),
             avatarPlaceholder: document.getElementById('avatar-placeholder'),
             message: document.getElementById('card-message')
         };
@@ -290,18 +289,18 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (event) => {
-                    displays.avatarImg.src = event.target.result;
-                    displays.avatarImg.classList.remove('hidden');
+                    // Use background-image for preview to prevent layout overflow
+                    displays.avatarPreview.style.backgroundImage = `url("${event.target.result}")`;
                     displays.avatarPlaceholder.classList.add('hidden');
                 };
                 reader.onerror = () => {
-                    displays.avatarImg.classList.add('hidden');
+                    displays.avatarPreview.style.backgroundImage = '';
                     displays.avatarPlaceholder.classList.remove('hidden');
                     displays.avatarPlaceholder.textContent = '❌';
                 };
                 reader.readAsDataURL(file);
             } else {
-                displays.avatarImg.classList.add('hidden');
+                displays.avatarPreview.style.backgroundImage = '';
                 displays.avatarPlaceholder.classList.remove('hidden');
                 displays.avatarPlaceholder.textContent = '🐱';
             }
@@ -414,17 +413,14 @@
                                      imgContainer.style.overflow = "hidden";
                                      imgContainer.style.borderRadius = "2px"; // Match rounded-sm
                                      
+                                     // Ensure background covers the fixed size
+                                     imgContainer.style.backgroundSize = "cover";
+                                     imgContainer.style.backgroundPosition = "center center";
+                                     imgContainer.style.backgroundRepeat = "no-repeat";
+                                     
+                                     // Legacy cleanup (if any img tags remain)
                                      const img = imgContainer.querySelector('img');
-                                     if (img && img.src) {
-                                        const imgSrc = img.src;
-                                        // Remove img element entirely to prevent any layout interference
-                                        img.remove();
-                                        
-                                        imgContainer.style.backgroundImage = `url("${imgSrc}")`;
-                                        imgContainer.style.backgroundSize = "cover";
-                                        imgContainer.style.backgroundPosition = "center center";
-                                        imgContainer.style.backgroundRepeat = "no-repeat";
-                                     }
+                                     if (img) img.remove();
                                  }
                              }
                         }
